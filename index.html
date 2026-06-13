@@ -1,20 +1,189 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PlayCool Studio</title>
+  <title>PlayCool Studio — Clean, Relaxing Casual Games</title>
+  <meta name="description" content="PlayCool Studio creates clean, relaxing casual puzzle games for mobile players. Meet SnapBlocks, our calm shape-fitting puzzle where every solve restores a beautiful world.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <h1>PlayCool Studio</h1>
-  <p>We create clean, relaxing casual puzzle games for mobile players.</p>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/">
+        <span class="brand-mark">P</span>
+        PlayCool Studio
+      </a>
+      <nav class="nav">
+        <a href="#games">Games</a>
+        <a href="#screens">Screenshots</a>
+        <a href="#about">About</a>
+        <a href="/support/">Support</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+    </div>
+  </header>
 
-  <h2>Our Games</h2>
-  <p><strong>SnapBlocks</strong> - A colorful block puzzle game for quick, satisfying play.</p>
+  <main>
+    <section class="hero">
+      <div class="container">
+        <span class="eyebrow">Casual games studio</span>
+        <h1>Clean, relaxing games made for quick play</h1>
+        <p>
+          PlayCool Studio designs colorful, satisfying puzzle games for mobile
+          players — the kind you can pick up for a minute or lose yourself in
+          for an hour.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#games">Explore our games</a>
+          <a class="store-badge" href="https://play.google.com/store/apps/details?id=com.snapblocks.game" target="_blank" rel="noopener" aria-label="Get SnapBlocks on Google Play">
+            <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play">
+          </a>
+        </div>
+      </div>
+    </section>
 
-  <p>
-    <a href="/privacy.html">Privacy Policy</a> |
-    <a href="/support.html">Support</a>
-  </p>
+    <section class="section" id="games">
+      <div class="container">
+        <div class="section-head">
+          <h2>Our Games</h2>
+          <p>Thoughtfully crafted experiences that are easy to learn and hard to put down.</p>
+        </div>
+
+        <div class="game-card">
+          <div>
+            <h3>SnapBlocks</h3>
+            <p class="tagline">CALM SHAPE-FITTING PUZZLE</p>
+            <p>
+              Slide and snap colorful shapes to perfectly fill each board. Every
+              level you solve helps restore a beautiful world — from the Lantern
+              Coast to Amberwood. Take on the daily Focus Prism, build your
+              streak, and chase flawless, no-hint solves.
+            </p>
+            <div class="cta-row" style="justify-content:flex-start;margin-top:0;">
+              <a class="store-badge" href="https://play.google.com/store/apps/details?id=com.snapblocks.game" target="_blank" rel="noopener" aria-label="Get SnapBlocks on Google Play">
+                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play">
+              </a>
+            </div>
+          </div>
+          <div class="game-visual" aria-hidden="true">
+            <div class="block-grid">
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="screens" style="padding-top:0;">
+      <div class="container">
+        <div class="section-head">
+          <h2>See SnapBlocks in action</h2>
+          <p>A peek at the puzzles, the worlds you'll restore, and the satisfying wins along the way.</p>
+        </div>
+        <div class="shots">
+          <figure class="phone">
+            <div class="screen"><img src="/assets/screenshots/home.png" alt="SnapBlocks home screen showing the Amberwood region and a level to resume" loading="lazy"></div>
+            <figcaption class="caption">Home &amp; progress</figcaption>
+          </figure>
+          <figure class="phone">
+            <div class="screen"><img src="/assets/screenshots/gameplay.png" alt="SnapBlocks gameplay — fitting shapes into the board" loading="lazy"></div>
+            <figcaption class="caption">Shape-fitting puzzles</figcaption>
+          </figure>
+          <figure class="phone">
+            <div class="screen"><img src="/assets/screenshots/prism-challenge.png" alt="SnapBlocks Prism Challenge puzzle in progress" loading="lazy"></div>
+            <figcaption class="caption">Prism challenges</figcaption>
+          </figure>
+          <figure class="phone">
+            <div class="screen"><img src="/assets/screenshots/level-complete.png" alt="Flawless level complete screen with three stars" loading="lazy"></div>
+            <figcaption class="caption">Flawless solves</figcaption>
+          </figure>
+          <figure class="phone">
+            <div class="screen"><img src="/assets/screenshots/world.png" alt="Your World map showing restored regions along the Lantern Coast" loading="lazy"></div>
+            <figcaption class="caption">Restore the world</figcaption>
+          </figure>
+          <figure class="phone">
+            <div class="screen"><img src="/assets/screenshots/daily.png" alt="Focus Prism daily challenge screen" loading="lazy"></div>
+            <figcaption class="caption">Daily Focus Prism</figcaption>
+          </figure>
+        </div>
+        <p class="shots-hint">Swipe to explore more &rarr;</p>
+      </div>
+    </section>
+
+    <section class="section" id="about" style="padding-top:0;">
+      <div class="container">
+        <div class="section-head">
+          <h2>Built around the player</h2>
+          <p>What every PlayCool game has in common.</p>
+        </div>
+        <div class="features">
+          <div class="feature">
+            <div class="icon">🧩</div>
+            <h3>Easy to learn</h3>
+            <p>Pick-up-and-play mechanics with no tutorials to grind through.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🌅</div>
+            <h3>Worlds to restore</h3>
+            <p>Bring beautiful regions back to life, one solved puzzle at a time.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🔥</div>
+            <h3>Daily streaks</h3>
+            <p>A fresh Focus Prism each day to keep your streak alive.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🏆</div>
+            <h3>Trophies &amp; stars</h3>
+            <p>Earn three stars and flawless, no-hint solves to show your skill.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">📵</div>
+            <h3>No account needed</h3>
+            <p>Just open and play. Your progress stays on your device.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🌿</div>
+            <h3>Calm by design</h3>
+            <p>Soothing visuals and pacing that never pressure or rush you.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="download" id="download">
+      <div class="container">
+        <div class="panel">
+          <h2>Start playing SnapBlocks</h2>
+          <p>Free to play, calm to enjoy. Download now and restore your first world.</p>
+          <a class="store-badge" href="https://play.google.com/store/apps/details?id=com.snapblocks.game" target="_blank" rel="noopener" aria-label="Get SnapBlocks on Google Play">
+            <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play">
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <a class="brand" href="/">
+        <span class="brand-mark">P</span>
+        PlayCool Studio
+      </a>
+      <div class="links">
+        <a href="/privacy/">Privacy Policy</a>
+        <a href="/support/">Support</a>
+        <a href="mailto:ajayhps18@gmail.com">Contact</a>
+      </div>
+      <small>&copy; 2026 PlayCool Studio. All rights reserved.</small>
+    </div>
+  </footer>
 </body>
 </html>
