@@ -45,9 +45,9 @@
  * nothing to serve.
  */
 
-import { ANCHORED_LEVELS, ANCHORED_FIRST_LEVEL, ANCHORED_INTERVAL } from './anchoredLevels.js?v=3bd14eb0045c';
-import { LEVEL_META, CHAPTER_SIZE } from './levels.js?v=3bd14eb0045c';
-import { isTreasureLevel } from './treasure.js?v=3bd14eb0045c';
+import { ANCHORED_LEVELS, ANCHORED_FIRST_LEVEL, ANCHORED_INTERVAL } from './anchoredLevels.js?v=5071259f5c9c';
+import { LEVEL_META, CHAPTER_SIZE } from './levels.js?v=5071259f5c9c';
+import { isTreasureLevel } from './treasure.js?v=5071259f5c9c';
 
 export { ANCHORED_FIRST_LEVEL, ANCHORED_INTERVAL };
 

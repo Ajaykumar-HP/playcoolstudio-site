@@ -2,8 +2,8 @@
  * FloatingBlock - Animated background decoration blocks
  */
 
-import { GAME_COLORS } from './levels.js?v=3bd14eb0045c';
-import Renderer from './renderer.js?v=3bd14eb0045c';
+import { GAME_COLORS } from './levels.js?v=5071259f5c9c';
+import Renderer from './renderer.js?v=5071259f5c9c';
 
 export default class FloatingBlock {
     constructor(canvasW, canvasH) {

@@ -7,7 +7,7 @@
  * because a portal ad adapter wants the same cadence AdMob gets.
  *
  * The transport lives in js/platform/adapters/ads-transport.js and is
- * re-exported below, so call sites keep importing everything from './ads.js?v=3bd14eb0045c'
+ * re-exported below, so call sites keep importing everything from './ads.js?v=5071259f5c9c'
  * and do not care which adapter is in the build. That indirection is what lets
  * scripts/build-web.mjs drop a portal-safe transport in without touching a
  * single call site. See ads-transport.portal.js for why that matters.
@@ -21,7 +21,7 @@ export {
     loadInterstitialAd,
     showInterstitialAd,
     usingProductionAds,
-} from './platform/adapters/ads-transport.js?v=3bd14eb0045c';
+} from './platform/adapters/ads-transport.js?v=5071259f5c9c';
 
 // One rewarded ad grants this many coins (= 1 hint's worth). Named *_COINS
 // since the hint economy became a coin economy; see economy.js.

@@ -11,37 +11,37 @@
  * handled below either mutates state + persists, calls a hook, or navigates.
  */
 
-import state, { saveConfig } from '../state.js?v=3bd14eb0045c';
-import Theme from '../theme.js?v=3bd14eb0045c';
-import { SCREENS } from './screens.js?v=3bd14eb0045c';
-import icons from './icons.js?v=3bd14eb0045c';
-import { evaluateTrophies, isThemeUnlocked, THEME_UNLOCKS } from '../progression.js?v=3bd14eb0045c';
-import { getDailyCountdown } from '../daily.js?v=3bd14eb0045c';
-import { setNotificationsEnabled } from '../notifications.js?v=3bd14eb0045c';
+import state, { saveConfig } from '../state.js?v=5071259f5c9c';
+import Theme from '../theme.js?v=5071259f5c9c';
+import { SCREENS } from './screens.js?v=5071259f5c9c';
+import icons from './icons.js?v=5071259f5c9c';
+import { evaluateTrophies, isThemeUnlocked, THEME_UNLOCKS } from '../progression.js?v=5071259f5c9c';
+import { getDailyCountdown } from '../daily.js?v=5071259f5c9c';
+import { setNotificationsEnabled } from '../notifications.js?v=5071259f5c9c';
 import {
     CLEAR_BONUS_AD_COINS,
     REWARDED_AD_COINS,
     loadRewardedHintAd,
     shouldOfferCleanClearBonus,
     showRewardedHintAd,
-} from '../ads.js?v=3bd14eb0045c';
-import { addCoins, canAfford, getCoins, HINT_COST, SOLVE_COST } from '../economy.js?v=3bd14eb0045c';
-import { LEVEL_META } from '../levels.js?v=3bd14eb0045c';
-import { SIZE as CHAPTER_SIZE } from '../chapters.js?v=3bd14eb0045c';
-import { isTreasureLevel } from '../treasure.js?v=3bd14eb0045c';
-import UpdateCheck from '../updateCheck.js?v=3bd14eb0045c';
-import { trackEvent } from '../analytics.js?v=3bd14eb0045c';
-import { caps, PLATFORM } from '../platform/index.js?v=3bd14eb0045c';
-import { CRAZYGAMES_LANDSCAPE } from '../platform/runtime.js?v=3bd14eb0045c';
-import { gameplayStop } from '../platform/lifecycle.js?v=3bd14eb0045c';
-import { PLAY_STORE_URL, PRIVACY_URL, SHARE_INSTALL_URL, storeDeepLink } from '../platform/links.js?v=3bd14eb0045c';
-import { countUp, springIn, breathe } from './motion.js?v=3bd14eb0045c';
+} from '../ads.js?v=5071259f5c9c';
+import { addCoins, canAfford, getCoins, HINT_COST, SOLVE_COST } from '../economy.js?v=5071259f5c9c';
+import { LEVEL_META } from '../levels.js?v=5071259f5c9c';
+import { SIZE as CHAPTER_SIZE } from '../chapters.js?v=5071259f5c9c';
+import { isTreasureLevel } from '../treasure.js?v=5071259f5c9c';
+import UpdateCheck from '../updateCheck.js?v=5071259f5c9c';
+import { trackEvent } from '../analytics.js?v=5071259f5c9c';
+import { caps, PLATFORM } from '../platform/index.js?v=5071259f5c9c';
+import { CRAZYGAMES_LANDSCAPE } from '../platform/runtime.js?v=5071259f5c9c';
+import { gameplayStop } from '../platform/lifecycle.js?v=5071259f5c9c';
+import { PLAY_STORE_URL, PRIVACY_URL, SHARE_INSTALL_URL, storeDeepLink } from '../platform/links.js?v=5071259f5c9c';
+import { countUp, springIn, breathe } from './motion.js?v=5071259f5c9c';
 // Browser-only gutter chrome outside the stage. Self-installing on import and a
 // no-op on Android; the export exists so its progress block can be refreshed on
 // the one event that can change it (see showBase).
-import { refreshSidePanels } from './sidePanels.js?v=3bd14eb0045c';
+import { refreshSidePanels } from './sidePanels.js?v=5071259f5c9c';
 // LAB (prototype) — self-contained in js/ui/lab/. Safe to delete with its call sites.
-import { consumeLabLaunch, endLabSession, isLabMode, labPauseGuard, restartLabLevel, startLabLevel } from './lab/index.js?v=3bd14eb0045c';
+import { consumeLabLaunch, endLabSession, isLabMode, labPauseGuard, restartLabLevel, startLabLevel } from './lab/index.js?v=5071259f5c9c';
 
 const BASE_SCREENS    = ['splash', 'onboarding', 'menu', 'map', 'reveal', 'levels', 'level-intro', 'game', 'complete', 'daily', 'trophies', 'shop', 'settings', 'lab'];
 const OVERLAY_SCREENS = ['pause', 'ad', 'game-settings', 'confirm-reset', 'reward', 'scene-view', 'update', 'cloud-conflict', 'rating'];

@@ -32,8 +32,8 @@
  * touch, so the stage keeps reporting 400 × 700 and the canvas keeps its 1:1 fit.
  */
 
-import state from '../state.js?v=3bd14eb0045c';
-import { CRAZYGAMES_LANDSCAPE } from '../platform/runtime.js?v=3bd14eb0045c';
+import state from '../state.js?v=5071259f5c9c';
+import { CRAZYGAMES_LANDSCAPE } from '../platform/runtime.js?v=5071259f5c9c';
 // Side-effect import, and load-bearing: isWeb() reads the data-platform stamp
 // that js/platform/index.js writes on evaluation, and an absent stamp reads as
 // "not a browser". Declaring the dependency here means the module graph
@@ -41,7 +41,7 @@ import { CRAZYGAMES_LANDSCAPE } from '../platform/runtime.js?v=3bd14eb0045c';
 // work because of the import order in js/game.js. Built web bundles also
 // pre-stamp the attribute in index.html (scripts/build-web.mjs) to avoid a
 // frame of unscaled paint; this covers running from source, where nothing does.
-import '../platform/index.js?v=3bd14eb0045c';
+import '../platform/index.js?v=5071259f5c9c';
 
 const PORTRAIT_W = 400;
 const PORTRAIT_H = 700;

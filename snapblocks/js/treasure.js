@@ -21,7 +21,7 @@
  * on a generator convention that a future pack rebuild could quietly drop.
  */
 
-import { LEVEL_META, CHAPTER_SIZE } from './levels.js?v=3bd14eb0045c';
+import { LEVEL_META, CHAPTER_SIZE } from './levels.js?v=5071259f5c9c';
 
 export const TREASURE_INTERVAL = 9;
 

@@ -7,8 +7,8 @@
  * via saveConfig.
  */
 
-import state, { saveConfig } from './state.js?v=3bd14eb0045c';
-import { addCoins, STREAK_MILESTONES } from './economy.js?v=3bd14eb0045c';
+import state, { saveConfig } from './state.js?v=5071259f5c9c';
+import { addCoins, STREAK_MILESTONES } from './economy.js?v=5071259f5c9c';
 
 // Start of local day (ms epoch). Makes "is today a new day?" comparisons cheap.
 const dayStartMs = (ts) => {

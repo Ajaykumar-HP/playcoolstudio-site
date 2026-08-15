@@ -16,8 +16,8 @@
  * coins or stars are affected.
  */
 
-import state from '../../state.js?v=3bd14eb0045c';
-import icons from '../icons.js?v=3bd14eb0045c';
+import state from '../../state.js?v=5071259f5c9c';
+import icons from '../icons.js?v=5071259f5c9c';
 
 // ---------------------------------------------------------------------------
 // Level data
@@ -27,7 +27,7 @@ import icons from '../icons.js?v=3bd14eb0045c';
 // static import would take the whole app down if the file is absent or renamed.
 // Until it resolves (and for any field it does not carry) the copy below is used.
 let LAB_LEVELS = [];
-import('../../lab/levels.js?v=3bd14eb0045c')
+import('../../lab/levels.js?v=5071259f5c9c')
     .then(m => { if (Array.isArray(m.LAB_LEVELS)) LAB_LEVELS = m.LAB_LEVELS; })
     .catch(() => { /* not landed yet — fall back to the copy below */ });
 

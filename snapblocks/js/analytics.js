@@ -12,7 +12,7 @@
  * debug switch, and the dispatch itself.
  */
 
-import { hasNativeTransport, installTransport, reservedEventName } from './platform/adapters/analytics-transport.js?v=3bd14eb0045c';
+import { hasNativeTransport, installTransport, reservedEventName } from './platform/adapters/analytics-transport.js?v=5071259f5c9c';
 
 const ANALYTICS_EVENT = 'snapblocks:analytics';
 const EVENT_NAME_RE = /^[A-Za-z][A-Za-z0-9_]{0,39}$/;

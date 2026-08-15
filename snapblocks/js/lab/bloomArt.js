@@ -18,11 +18,11 @@
  * covered by the pieces that filled it.
  */
 
-import Theme from '../theme.js?v=3bd14eb0045c';
-import Renderer from '../renderer.js?v=3bd14eb0045c';
-import GamePiece from '../gamePiece.js?v=3bd14eb0045c';
-import { GAME_COLORS } from '../levels.js?v=3bd14eb0045c';
-import { MIX_RECIPES } from '../mixRecipes.js?v=3bd14eb0045c';
+import Theme from '../theme.js?v=5071259f5c9c';
+import Renderer from '../renderer.js?v=5071259f5c9c';
+import GamePiece from '../gamePiece.js?v=5071259f5c9c';
+import { GAME_COLORS } from '../levels.js?v=5071259f5c9c';
+import { MIX_RECIPES } from '../mixRecipes.js?v=5071259f5c9c';
 
 // ---- Recipe lookup -------------------------------------------------------
 // MIX_RECIPES stores each result as a display hex, not as a palette index, so

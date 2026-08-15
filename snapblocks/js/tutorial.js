@@ -12,9 +12,9 @@
  * the data source.
  */
 
-import state, { saveConfig } from './state.js?v=3bd14eb0045c';
-import { addCoins, REWARD_TUTORIAL } from './economy.js?v=3bd14eb0045c';
-import { CRAZYGAMES_LANDSCAPE } from './platform/runtime.js?v=3bd14eb0045c';
+import state, { saveConfig } from './state.js?v=5071259f5c9c';
+import { addCoins, REWARD_TUTORIAL } from './economy.js?v=5071259f5c9c';
+import { CRAZYGAMES_LANDSCAPE } from './platform/runtime.js?v=5071259f5c9c';
 
 // Cell helpers (mirrored from levels.js so we don't have to import — keeps
 // tutorial self-contained and trivially editable).

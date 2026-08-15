@@ -2,9 +2,9 @@
  * Daily Prism - deterministic daily challenge selection and rewards.
  */
 
-import state, { saveConfig } from './state.js?v=3bd14eb0045c';
-import { LEVELS } from './levels.js?v=3bd14eb0045c';
-import { addCoins, REWARD_DAILY } from './economy.js?v=3bd14eb0045c';
+import state, { saveConfig } from './state.js?v=5071259f5c9c';
+import { LEVELS } from './levels.js?v=5071259f5c9c';
+import { addCoins, REWARD_DAILY } from './economy.js?v=5071259f5c9c';
 
 export const DAILY_SAVE_KEY = 'snapblocks.activeDaily.v1';
 export const ACTIVE_MODE_KEY = 'snapblocks.activeMode.v1';

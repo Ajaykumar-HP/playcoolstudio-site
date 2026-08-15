@@ -1,4 +1,4 @@
-import { DISPLAY_PLATFORM, PLATFORM } from './runtime.js?v=3bd14eb0045c';
+import { DISPLAY_PLATFORM, PLATFORM } from './runtime.js?v=5071259f5c9c';
 
 /**
  * Platform capability seam.
@@ -92,7 +92,7 @@ const CAPS_BY_PLATFORM = {
 // string collapses to 'web', because a platform we cannot describe is one
 // whose native bridges we must not assume, and because CSS and the rest of
 // the app are written against a closed set of data-platform values.
-export { PLATFORM } from './runtime.js?v=3bd14eb0045c';
+export { PLATFORM } from './runtime.js?v=5071259f5c9c';
 
 export const caps = Object.freeze({ ...CAPS_BY_PLATFORM[PLATFORM] });
 

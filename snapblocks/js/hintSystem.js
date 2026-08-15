@@ -6,16 +6,16 @@
  * long time, so the whole canvas overlay was unreachable code; it is gone.
  */
 
-import state from './state.js?v=3bd14eb0045c';
-import { LEVELS } from './levels.js?v=3bd14eb0045c';
-import { getAnchoredGrid } from './anchored.js?v=3bd14eb0045c';
-import { canAfford, spendCoins, HINT_COST } from './economy.js?v=3bd14eb0045c';
-import SoundEngine from './sound.js?v=3bd14eb0045c';
-import Theme from './theme.js?v=3bd14eb0045c';
-import Board, { decomposeLevel } from './board.js?v=3bd14eb0045c';
-import HapticsEngine from './haptics.js?v=3bd14eb0045c';
-import Transition from './transition.js?v=3bd14eb0045c';
-import { TRAY_LAYOUT } from './playLayout.js?v=3bd14eb0045c';
+import state from './state.js?v=5071259f5c9c';
+import { LEVELS } from './levels.js?v=5071259f5c9c';
+import { getAnchoredGrid } from './anchored.js?v=5071259f5c9c';
+import { canAfford, spendCoins, HINT_COST } from './economy.js?v=5071259f5c9c';
+import SoundEngine from './sound.js?v=5071259f5c9c';
+import Theme from './theme.js?v=5071259f5c9c';
+import Board, { decomposeLevel } from './board.js?v=5071259f5c9c';
+import HapticsEngine from './haptics.js?v=5071259f5c9c';
+import Transition from './transition.js?v=5071259f5c9c';
+import { TRAY_LAYOUT } from './playLayout.js?v=5071259f5c9c';
 
 const { CANVAS_W } = state;
 

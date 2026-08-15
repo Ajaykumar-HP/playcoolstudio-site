@@ -21,11 +21,11 @@
  * this file writes to state.config.
  */
 
-import state from '../state.js?v=3bd14eb0045c';
-import Board, { BOARD_SIZE, createGrid, createPieces, decomposeLevel } from '../board.js?v=3bd14eb0045c';
-import HintSystem from '../hintSystem.js?v=3bd14eb0045c';
-import { findRecipeForCell } from '../mixRecipes.js?v=3bd14eb0045c';
-import { LAB_LEVELS } from './levels.js?v=3bd14eb0045c';
+import state from '../state.js?v=5071259f5c9c';
+import Board, { BOARD_SIZE, createGrid, createPieces, decomposeLevel } from '../board.js?v=5071259f5c9c';
+import HintSystem from '../hintSystem.js?v=5071259f5c9c';
+import { findRecipeForCell } from '../mixRecipes.js?v=5071259f5c9c';
+import { LAB_LEVELS } from './levels.js?v=5071259f5c9c';
 
 export { LAB_LEVELS };
 

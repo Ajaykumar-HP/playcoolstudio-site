@@ -2,20 +2,20 @@
  * Board — Game board rendering, piece fitting, and grid management
  */
 
-import state from './state.js?v=3bd14eb0045c';
-import Theme from './theme.js?v=3bd14eb0045c';
-import Renderer from './renderer.js?v=3bd14eb0045c';
-import Transition from './transition.js?v=3bd14eb0045c';
-import GamePiece from './gamePiece.js?v=3bd14eb0045c';
-import { GAME_COLORS } from './levels.js?v=3bd14eb0045c';
-import { findRecipeForCell } from './mixRecipes.js?v=3bd14eb0045c';
+import state from './state.js?v=5071259f5c9c';
+import Theme from './theme.js?v=5071259f5c9c';
+import Renderer from './renderer.js?v=5071259f5c9c';
+import Transition from './transition.js?v=5071259f5c9c';
+import GamePiece from './gamePiece.js?v=5071259f5c9c';
+import { GAME_COLORS } from './levels.js?v=5071259f5c9c';
+import { findRecipeForCell } from './mixRecipes.js?v=5071259f5c9c';
 import {
     bloomHexFor,
     buildBloomLayer,
     buildBloomSprite,
     drawBloomBurst,
-} from './lab/bloomArt.js?v=3bd14eb0045c';
-import { BOARD_LAYOUT } from './playLayout.js?v=3bd14eb0045c';
+} from './lab/bloomArt.js?v=5071259f5c9c';
+import { BOARD_LAYOUT } from './playLayout.js?v=5071259f5c9c';
 
 // Logical grid size. The warm-white card extends CARD_PAD (6px) beyond the grid
 // on every side, giving the wells calm outer breathing room without changing

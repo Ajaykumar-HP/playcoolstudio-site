@@ -7,8 +7,8 @@
  * the nodes only give players a satisfying route through the same solution.
  */
 
-import { LEVEL_META } from './levels.js?v=3bd14eb0045c';
-import { isTreasureLevel } from './treasure.js?v=3bd14eb0045c';
+import { LEVEL_META } from './levels.js?v=5071259f5c9c';
+import { isTreasureLevel } from './treasure.js?v=5071259f5c9c';
 
 export const PULSE_FIRST_LEVEL = 14; // 0-based: first Pulse is level 15
 export const PULSE_INTERVAL = 20;

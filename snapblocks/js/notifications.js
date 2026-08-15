@@ -21,9 +21,9 @@
  * never at install — and only once; declining is remembered and respected.
  */
 
-import state, { saveConfig } from './state.js?v=3bd14eb0045c';
-import { trackEvent } from './analytics.js?v=3bd14eb0045c';
-import { caps } from './platform/index.js?v=3bd14eb0045c';
+import state, { saveConfig } from './state.js?v=5071259f5c9c';
+import { trackEvent } from './analytics.js?v=5071259f5c9c';
+import { caps } from './platform/index.js?v=5071259f5c9c';
 
 // Stable ids so re-planning replaces (never duplicates) each slot.
 // 101 morning · 102 midday · 103 evening · 104 streak-ended.

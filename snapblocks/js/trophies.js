@@ -2,10 +2,10 @@
  * Trophies — Stats/achievements overlay accessible from main menu
  */
 
-import state from './state.js?v=3bd14eb0045c';
-import { LEVELS } from './levels.js?v=3bd14eb0045c';
-import SoundEngine from './sound.js?v=3bd14eb0045c';
-import Transition from './transition.js?v=3bd14eb0045c';
+import state from './state.js?v=5071259f5c9c';
+import { LEVELS } from './levels.js?v=5071259f5c9c';
+import SoundEngine from './sound.js?v=5071259f5c9c';
+import Transition from './transition.js?v=5071259f5c9c';
 
 const { CANVAS_W, CANVAS_H } = state;
 

@@ -2,7 +2,7 @@
  * Haptics helper - uses Capacitor Haptics when available, vibrate as fallback
  */
 
-import state from './state.js?v=3bd14eb0045c';
+import state from './state.js?v=5071259f5c9c';
 
 const getPlugin = () => window.Capacitor?.Plugins?.Haptics;
 

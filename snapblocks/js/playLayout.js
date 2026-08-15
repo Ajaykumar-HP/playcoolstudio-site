@@ -1,6 +1,6 @@
 /** Shared logical geometry for gameplay and the CrazyGames landscape shell. */
 
-import { CRAZYGAMES_LANDSCAPE } from './platform/runtime.js?v=3bd14eb0045c';
+import { CRAZYGAMES_LANDSCAPE } from './platform/runtime.js?v=5071259f5c9c';
 
 export const LOGICAL_SIZE = Object.freeze(CRAZYGAMES_LANDSCAPE
     ? { w: 760, h: 520 }

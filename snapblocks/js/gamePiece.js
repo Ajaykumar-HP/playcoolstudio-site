@@ -2,11 +2,11 @@
  * GamePiece - A draggable puzzle piece with pre-rendered canvas
  */
 
-import state from './state.js?v=3bd14eb0045c';
-import Renderer from './renderer.js?v=3bd14eb0045c';
-import Theme from './theme.js?v=3bd14eb0045c';
-import { buildAnchoredSkin } from './anchoredSkin.js?v=3bd14eb0045c';
-import { DRAG_BOUNDS } from './playLayout.js?v=3bd14eb0045c';
+import state from './state.js?v=5071259f5c9c';
+import Renderer from './renderer.js?v=5071259f5c9c';
+import Theme from './theme.js?v=5071259f5c9c';
+import { buildAnchoredSkin } from './anchoredSkin.js?v=5071259f5c9c';
+import { DRAG_BOUNDS } from './playLayout.js?v=5071259f5c9c';
 
 // Colorblind-mode textures, indexed by (colorIdx - 1) % length. The length is
 // load-bearing: with 4 entries, indices 5/17/21/29 all landed on 'diagonal',

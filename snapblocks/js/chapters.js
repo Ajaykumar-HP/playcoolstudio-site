@@ -12,8 +12,8 @@
  * Places scale via a seeded scene generator (sceneSVG) — no per-place art needed.
  * Lands group every 10 chapters under a shared palette for visual cohesion.
  */
-import { CHAPTER_SIZE, LEVELS, PLACE_SEEDS } from './levels.js?v=3bd14eb0045c';
-import state from './state.js?v=3bd14eb0045c';
+import { CHAPTER_SIZE, LEVELS, PLACE_SEEDS } from './levels.js?v=5071259f5c9c';
+import state from './state.js?v=5071259f5c9c';
 
 export const SIZE = CHAPTER_SIZE;
 export const chapterCount = () => Math.ceil(LEVELS.length / SIZE);

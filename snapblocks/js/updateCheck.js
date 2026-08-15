@@ -27,10 +27,10 @@
  * supposed to make none should not contain the URL either.
  */
 
-import state, { saveConfig } from './state.js?v=3bd14eb0045c';
-import { trackEvent } from './analytics.js?v=3bd14eb0045c';
-import { caps } from './platform/index.js?v=3bd14eb0045c';
-import { PLAY_STORE_URL as PLAY_URL, VERSION_URL } from './platform/links.js?v=3bd14eb0045c';
+import state, { saveConfig } from './state.js?v=5071259f5c9c';
+import { trackEvent } from './analytics.js?v=5071259f5c9c';
+import { caps } from './platform/index.js?v=5071259f5c9c';
+import { PLAY_STORE_URL as PLAY_URL, VERSION_URL } from './platform/links.js?v=5071259f5c9c';
 const THROTTLE_MS = 6 * 60 * 60 * 1000; // re-check at most every 6h on resume
 
 let lastCheckAt = 0;

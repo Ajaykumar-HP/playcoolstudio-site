@@ -18,7 +18,7 @@
  * already-correct call sites is mechanical.
  */
 
-import { PLATFORM, caps } from './index.js?v=3bd14eb0045c';
+import { PLATFORM, caps } from './index.js?v=5071259f5c9c';
 
 /**
  * Per-platform implementations. Keyed by PLATFORM so a portal build selects its

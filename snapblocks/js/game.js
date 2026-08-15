@@ -14,39 +14,39 @@
  *   - The DOM ↔ canvas bridge via `UI.init(hooks)`
  */
 
-import { LEVELS } from './levels.js?v=3bd14eb0045c';
-import SoundEngine from './sound.js?v=3bd14eb0045c';
-import MusicEngine from './music.js?v=3bd14eb0045c';
-import Transition from './transition.js?v=3bd14eb0045c';
-import Renderer from './renderer.js?v=3bd14eb0045c';
-import Input from './input.js?v=3bd14eb0045c';
-import FloatingBlock from './floatingBlock.js?v=3bd14eb0045c';
-import Theme from './theme.js?v=3bd14eb0045c';
-import HapticsEngine from './haptics.js?v=3bd14eb0045c';
+import { LEVELS } from './levels.js?v=5071259f5c9c';
+import SoundEngine from './sound.js?v=5071259f5c9c';
+import MusicEngine from './music.js?v=5071259f5c9c';
+import Transition from './transition.js?v=5071259f5c9c';
+import Renderer from './renderer.js?v=5071259f5c9c';
+import Input from './input.js?v=5071259f5c9c';
+import FloatingBlock from './floatingBlock.js?v=5071259f5c9c';
+import Theme from './theme.js?v=5071259f5c9c';
+import HapticsEngine from './haptics.js?v=5071259f5c9c';
 
-import state, { saveConfig, loadConfig } from './state.js?v=3bd14eb0045c';
-import Board, { BOARD_SIZE, createGrid, createPieces, decomposeLevel } from './board.js?v=3bd14eb0045c';
-import HintSystem from './hintSystem.js?v=3bd14eb0045c';
-import UI from './ui/index.js?v=3bd14eb0045c';
+import state, { saveConfig, loadConfig } from './state.js?v=5071259f5c9c';
+import Board, { BOARD_SIZE, createGrid, createPieces, decomposeLevel } from './board.js?v=5071259f5c9c';
+import HintSystem from './hintSystem.js?v=5071259f5c9c';
+import UI from './ui/index.js?v=5071259f5c9c';
 // Side-effect only: scales the active portrait or portal-landscape stage to fit
 // a browser viewport. No-ops on Android, where the WebView is phone-sized.
-import './ui/stageScale.js?v=3bd14eb0045c';
-import { onLevelClear, checkInPlay } from './progression.js?v=3bd14eb0045c';
-import { initializeAds, loadRewardedHintAd, loadInterstitialAd, interstitialDecision, showInterstitialAd } from './ads.js?v=3bd14eb0045c';
-import { maybeRequestPermissionAndSchedule, rescheduleNotifications } from './notifications.js?v=3bd14eb0045c';
-import UpdateCheck from './updateCheck.js?v=3bd14eb0045c';
-import { addCoins, getCoins, spendCoins, REWARD_PRISM, REWARD_PULSE, SOLVE_COST, firstClearReward, REWARD_CHAPTER_RESTORE, REWARD_TREASURE, MAX_LEVEL_CLEAR_COINS } from './economy.js?v=3bd14eb0045c';
-import { isTreasureLevel } from './treasure.js?v=3bd14eb0045c';
-import { getPulseTargets, isPulseLevel, PULSE_NODE_COUNT } from './pulse.js?v=3bd14eb0045c';
-import { getAnchoredLevel, getAnchoredGrid } from './anchored.js?v=3bd14eb0045c';
-import { recordGoalEvent } from './missions.js?v=3bd14eb0045c';
-import { trackEvent } from './analytics.js?v=3bd14eb0045c';
-import { gameplayStart, gameplayStop } from './platform/lifecycle.js?v=3bd14eb0045c';
-import CloudSave from './cloudSave.js?v=3bd14eb0045c';
-import Tutorial, { TUTORIAL_LEVELS } from './tutorial.js?v=3bd14eb0045c';
-import { LEVEL_META } from './levels.js?v=3bd14eb0045c';
-import { SIZE as CHAPTER_SIZE, chapterOf, STAGE_AT } from './chapters.js?v=3bd14eb0045c';
-import { MIX_BONUS } from './mixRecipes.js?v=3bd14eb0045c';
+import './ui/stageScale.js?v=5071259f5c9c';
+import { onLevelClear, checkInPlay } from './progression.js?v=5071259f5c9c';
+import { initializeAds, loadRewardedHintAd, loadInterstitialAd, interstitialDecision, showInterstitialAd } from './ads.js?v=5071259f5c9c';
+import { maybeRequestPermissionAndSchedule, rescheduleNotifications } from './notifications.js?v=5071259f5c9c';
+import UpdateCheck from './updateCheck.js?v=5071259f5c9c';
+import { addCoins, getCoins, spendCoins, REWARD_PRISM, REWARD_PULSE, SOLVE_COST, firstClearReward, REWARD_CHAPTER_RESTORE, REWARD_TREASURE, MAX_LEVEL_CLEAR_COINS } from './economy.js?v=5071259f5c9c';
+import { isTreasureLevel } from './treasure.js?v=5071259f5c9c';
+import { getPulseTargets, isPulseLevel, PULSE_NODE_COUNT } from './pulse.js?v=5071259f5c9c';
+import { getAnchoredLevel, getAnchoredGrid } from './anchored.js?v=5071259f5c9c';
+import { recordGoalEvent } from './missions.js?v=5071259f5c9c';
+import { trackEvent } from './analytics.js?v=5071259f5c9c';
+import { gameplayStart, gameplayStop } from './platform/lifecycle.js?v=5071259f5c9c';
+import CloudSave from './cloudSave.js?v=5071259f5c9c';
+import Tutorial, { TUTORIAL_LEVELS } from './tutorial.js?v=5071259f5c9c';
+import { LEVEL_META } from './levels.js?v=5071259f5c9c';
+import { SIZE as CHAPTER_SIZE, chapterOf, STAGE_AT } from './chapters.js?v=5071259f5c9c';
+import { MIX_BONUS } from './mixRecipes.js?v=5071259f5c9c';
 import {
     ACTIVE_MODE_KEY,
     DAILY_SAVE_KEY,
@@ -55,12 +55,12 @@ import {
     getFocusStars,
     getLocalDateKey,
     markDailyComplete,
-} from './daily.js?v=3bd14eb0045c';
+} from './daily.js?v=5071259f5c9c';
 // LAB (prototype): every lab system lives in js/lab/. Deleting that folder and
 // the six `LAB (prototype)` call sites below removes the feature completely.
-import { loadLabLevel, syncBloomProgress, labWinConditionMet } from './lab/labMode.js?v=3bd14eb0045c';
-import { TRAY_LAYOUT } from './playLayout.js?v=3bd14eb0045c';
-import { CRAZYGAMES_LANDSCAPE } from './platform/runtime.js?v=3bd14eb0045c';
+import { loadLabLevel, syncBloomProgress, labWinConditionMet } from './lab/labMode.js?v=5071259f5c9c';
+import { TRAY_LAYOUT } from './playLayout.js?v=5071259f5c9c';
+import { CRAZYGAMES_LANDSCAPE } from './platform/runtime.js?v=5071259f5c9c';
 
 const { CANVAS_W, CANVAS_H } = state;
 const LANDSCAPE_PLAY = CRAZYGAMES_LANDSCAPE;

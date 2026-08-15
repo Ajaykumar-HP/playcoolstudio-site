@@ -13,10 +13,10 @@
  * self-resets when the local date changes.
  */
 
-import state, { saveConfig } from './state.js?v=3bd14eb0045c';
-import { addCoins } from './economy.js?v=3bd14eb0045c';
-import { getLocalDateKey } from './daily.js?v=3bd14eb0045c';
-import { trackEvent } from './analytics.js?v=3bd14eb0045c';
+import state, { saveConfig } from './state.js?v=5071259f5c9c';
+import { addCoins } from './economy.js?v=5071259f5c9c';
+import { getLocalDateKey } from './daily.js?v=5071259f5c9c';
+import { trackEvent } from './analytics.js?v=5071259f5c9c';
 
 // tint = existing sb-bg-* accent class; icon = key in ui/icons.js.
 //

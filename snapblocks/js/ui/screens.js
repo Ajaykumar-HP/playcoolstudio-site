@@ -9,23 +9,27 @@
  * Keep these templates pure; all wiring happens in ui/index.js.
  */
 
-import state from '../state.js?v=3bd14eb0045c';
-import { LEVELS, LEVEL_META, GAME_COLORS } from '../levels.js?v=3bd14eb0045c';
-import icons from './icons.js?v=3bd14eb0045c';
-import { wordmark, wordmarkBig, appLogo, menuAppLogo } from './logo.js?v=3bd14eb0045c';
-import { TROPHIES, THEME_UNLOCKS, isThemeUnlocked } from '../progression.js?v=3bd14eb0045c';
-import { getCoins, HINT_COST, SOLVE_COST, REWARD_TUTORIAL, REWARD_TREASURE, REWARD_PULSE, STREAK_MILESTONES } from '../economy.js?v=3bd14eb0045c';
-import { REWARDED_AD_COINS } from '../ads.js?v=3bd14eb0045c';
-import { TUTORIAL_COACH } from '../tutorial.js?v=3bd14eb0045c';
-import { isTreasureLevel, nextTreasureIn } from '../treasure.js?v=3bd14eb0045c';
-import { isPulseLevel, nextPulseIn, PULSE_NODE_COUNT } from '../pulse.js?v=3bd14eb0045c';
-import { getAnchoredGrid } from '../anchored.js?v=3bd14eb0045c';
-import { caps } from '../platform/index.js?v=3bd14eb0045c';
+import state from '../state.js?v=5071259f5c9c';
+import { LEVELS, LEVEL_META, GAME_COLORS } from '../levels.js?v=5071259f5c9c';
+import icons from './icons.js?v=5071259f5c9c';
+import { wordmark, wordmarkBig, appLogo, menuAppLogo } from './logo.js?v=5071259f5c9c';
+import { TROPHIES, THEME_UNLOCKS, isThemeUnlocked } from '../progression.js?v=5071259f5c9c';
+import { getCoins, HINT_COST, SOLVE_COST, REWARD_TUTORIAL, REWARD_TREASURE, REWARD_PULSE, STREAK_MILESTONES } from '../economy.js?v=5071259f5c9c';
+import { REWARDED_AD_COINS } from '../ads.js?v=5071259f5c9c';
+import { TUTORIAL_COACH } from '../tutorial.js?v=5071259f5c9c';
+import { isTreasureLevel, nextTreasureIn } from '../treasure.js?v=5071259f5c9c';
+import { isPulseLevel, nextPulseIn, PULSE_NODE_COUNT } from '../pulse.js?v=5071259f5c9c';
+import { getAnchoredGrid } from '../anchored.js?v=5071259f5c9c';
+import { caps } from '../platform/index.js?v=5071259f5c9c';
+// Not a cap: whether this build HAS a privacy URL to open. links.portal.js
+// blanks it, and a row whose only action opens '' is a button that does
+// nothing — which is exactly what a portal reviewer clicks first.
+import { PRIVACY_URL } from '../platform/links.js?v=5071259f5c9c';
 // Not a cap: the Settings row asks whether vibration *works here*, which on web
 // varies by device rather than by build. See hapticsSupported() in js/haptics.js.
-import { hapticsSupported } from '../haptics.js?v=3bd14eb0045c';
+import { hapticsSupported } from '../haptics.js?v=5071259f5c9c';
 // LAB (prototype) — self-contained in js/ui/lab/. Safe to delete with its call sites.
-import { labScreen, labHudChip, labHudSpacer, labPauseAction, isLabMode } from './lab/index.js?v=3bd14eb0045c';
+import { labScreen, labHudChip, labHudSpacer, labPauseAction, isLabMode } from './lab/index.js?v=5071259f5c9c';
 
 // Shown in Settings → Version. The native build number is patched in over this
 // fallback from @capacitor/app when available (see ui/index.js settings mount).
@@ -34,7 +38,7 @@ import {
     chapterCount, activeChapter, chapterProgress, restoredPlaces, isChapterRestored,
     placeName, landName, sceneSVG, chapterStart, chapterEnd, clearedCount,
     SIZE as CHAPTER_SIZE, stageOf, STAGE_INFO, nextRestoration, chapterOf,
-} from '../chapters.js?v=3bd14eb0045c';
+} from '../chapters.js?v=5071259f5c9c';
 import {
     formatDailyDate,
     getDailyCountdown,
@@ -45,8 +49,8 @@ import {
     getWeeklyConstellation,
     getLocalDateKey,
     isDailyCompleted,
-} from '../daily.js?v=3bd14eb0045c';
-import { getTodaysGoals } from '../missions.js?v=3bd14eb0045c';
+} from '../daily.js?v=5071259f5c9c';
+import { getTodaysGoals } from '../missions.js?v=5071259f5c9c';
 
 // =========================================================================
 // helpers
@@ -2050,9 +2054,10 @@ SCREENS.settings = () => {
                 <div class="sb-setting-row" data-action="rate-app">
                     <div style="font-weight:700;">Rate SnapBlocks</div>${icons.chevronR}
                 </div>` : ''}
+                ${PRIVACY_URL ? `
                 <div class="sb-setting-row" data-action="open-privacy">
                     <div style="font-weight:700;">Privacy policy</div>${icons.chevronR}
-                </div>
+                </div>` : ''}
                 <div class="sb-setting-row">
                     <div>
                         <div style="font-weight:700;">Version</div>

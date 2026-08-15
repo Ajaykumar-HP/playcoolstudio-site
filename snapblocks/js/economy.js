@@ -13,7 +13,7 @@
  * All mutations go through here so grants/spends stay consistent and persist.
  */
 
-import state, { saveConfig } from './state.js?v=3bd14eb0045c';
+import state, { saveConfig } from './state.js?v=5071259f5c9c';
 
 export const COINS_PER_HINT = 10;
 

@@ -1,4 +1,4 @@
-import state, { importConfig, sanitizeConfigCandidate } from './state.js?v=3bd14eb0045c';
+import state, { importConfig, sanitizeConfigCandidate } from './state.js?v=5071259f5c9c';
 import {
     SNAPSHOT_NAME,
     chooseInitialAction,
@@ -9,8 +9,8 @@ import {
     fingerprintConfig,
     isDefaultConfig,
     summarizeConfig,
-} from './cloudSaveCore.js?v=3bd14eb0045c';
-import { caps } from './platform/index.js?v=3bd14eb0045c';
+} from './cloudSaveCore.js?v=5071259f5c9c';
+import { caps } from './platform/index.js?v=5071259f5c9c';
 
 const META_KEY = 'snapblocks.cloud.meta.v1';
 const STATE_EVENT = 'snapblocks:cloud-state';

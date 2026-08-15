@@ -34,16 +34,16 @@
  * timer, no observer, and nothing here reads state during play.
  */
 
-import { GAME_COLORS } from '../levels.js?v=3bd14eb0045c';
-import { MIX_RECIPES } from '../mixRecipes.js?v=3bd14eb0045c';
-import { activeChapter, chapterCount, placeName } from '../chapters.js?v=3bd14eb0045c';
-import { levelsCleared, totalStars } from '../progression.js?v=3bd14eb0045c';
-import { menuAppLogo, wordmark } from './logo.js?v=3bd14eb0045c';
+import { GAME_COLORS } from '../levels.js?v=5071259f5c9c';
+import { MIX_RECIPES } from '../mixRecipes.js?v=5071259f5c9c';
+import { activeChapter, chapterCount, placeName } from '../chapters.js?v=5071259f5c9c';
+import { levelsCleared, totalStars } from '../progression.js?v=5071259f5c9c';
+import { menuAppLogo, wordmark } from './logo.js?v=5071259f5c9c';
 // Side-effect import for the same reason stageScale.js declares it: isWeb()
 // reads the data-platform stamp js/platform/index.js writes on evaluation, and
 // an absent stamp must read as "not a browser" so Android can never grow chrome
 // it has no room for.
-import '../platform/index.js?v=3bd14eb0045c';
+import '../platform/index.js?v=5071259f5c9c';
 
 const root = document.documentElement;
 

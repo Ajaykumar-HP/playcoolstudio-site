@@ -2,9 +2,9 @@
  * Shared Game State — single source of truth for cross-module state
  */
 
-import { LEVELS } from './levels.js?v=3bd14eb0045c';
-import { isAnchoredLevel } from './anchored.js?v=3bd14eb0045c';
-import { LOGICAL_SIZE } from './playLayout.js?v=3bd14eb0045c';
+import { LEVELS } from './levels.js?v=5071259f5c9c';
+import { isAnchoredLevel } from './anchored.js?v=5071259f5c9c';
+import { LOGICAL_SIZE } from './playLayout.js?v=5071259f5c9c';
 
 const CFG_KEY = 'snapblocks';
 
