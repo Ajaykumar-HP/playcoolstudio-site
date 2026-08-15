@@ -1,0 +1,29 @@
+/*
+ * Bundled fonts (latin subset, variable weight) — replaces the Google Fonts
+ * CDN links so first launch renders correctly offline inside the Android
+ * WebView, with no network dependency or font-swap layout shift.
+ */
+
+@font-face {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 200 1000;
+    font-display: swap;
+    src: url('Nunito.var.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('Outfit.var.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 100 800;
+    font-display: swap;
+    src: url('JetBrainsMono.var.woff2') format('woff2');
+}

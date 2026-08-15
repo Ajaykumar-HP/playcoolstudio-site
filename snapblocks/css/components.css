@@ -1,0 +1,551 @@
+/* SnapBlocks — Component Primitives
+ *
+ * Reusable UI building blocks that compose into screens.
+ * All classes are prefixed `sb-` to avoid colliding with any legacy styling.
+ * Tokens come from css/tokens.css.
+ */
+
+/* ============================================================
+ * Typography
+ * ============================================================ */
+.sb-h-xl { font: 900 38px/1.05 var(--font-display); letter-spacing: -0.035em; color: var(--ink); }
+.sb-h-lg { font: 900 28px/1.1  var(--font-display); letter-spacing: -0.025em; color: var(--ink); }
+.sb-h-md { font: 850 22px/1.2  var(--font-display); letter-spacing: -0.018em; color: var(--ink); }
+.sb-h-sm { font: 800 17px/1.3  var(--font-display); color: var(--ink); }
+
+/* Headings scale with the viewport below the 400px design width instead of
+ * being stepped at one or two breakpoints. Each clamp saturates at its
+ * authored size, so at >= 400px (and on tablets, where the stage caps at 400
+ * but the viewport is far wider) nothing changes at all — this only ever bites
+ * on phones narrower than the layout was drawn for. The line-heights come from
+ * the `font` shorthand above as unitless ratios, so they scale along.
+ *
+ * Concretely: "Solve costs 20 coins" (.sb-h-md, beside a 56px icon in the
+ * out-of-coins sheet) had ~196px of room at 320px wide and needed ~209px at
+ * the fixed 22px. overflow-wrap keeps a single long token — a place name, a
+ * localised string — inside its box rather than out the side of a card. */
+.sb-h-xl { font-size: clamp(30px, 9.5vw, 38px); }
+.sb-h-lg { font-size: clamp(23px, 7vw,   28px); }
+.sb-h-md { font-size: clamp(18px, 5.5vw, 22px); }
+.sb-h-sm { font-size: clamp(15px, 4.3vw, 17px); }
+.sb-h-xl, .sb-h-lg, .sb-h-md, .sb-h-sm { overflow-wrap: break-word; }
+
+.sb-label {
+  font: 800 11px/1.2 var(--font-display);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.sb-mono  { font-family: var(--font-mono); font-weight: 500; }
+.sb-body  { font-size: 15px; color: var(--ink-2); line-height: 1.45; }
+.sb-small { font-size: 13px; color: var(--ink-soft); }
+
+/* ============================================================
+ * Cards
+ * ============================================================ */
+.sb-card {
+  background: linear-gradient(155deg, var(--surface-top), var(--surface-bottom));
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-soft);
+}
+.sb-card-inset {
+  background: color-mix(in oklab, var(--bg-inset), var(--bg) 18%);
+  border: 1px solid color-mix(in oklab, var(--hairline), transparent 22%);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: inset 0 1px 2px color-mix(in oklab, var(--ink), transparent 94%);
+}
+.sb-world-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  padding: 18px 18px 22px;
+  color: var(--ink);
+  overflow: hidden;
+  border: 1px solid color-mix(in oklab, white, transparent 82%);
+  box-shadow: var(--shadow-lift);
+}
+
+/* ============================================================
+ * Buttons
+ * ============================================================ */
+.sb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 56px;
+  min-height: 52px;
+  padding: 0 28px;
+  border-radius: 17px;
+  /* Restrained material lighting keeps the CTA dimensional without a hard
+     toy-like extrusion. */
+  background: linear-gradient(180deg,
+      color-mix(in oklab, var(--primary), white 10%) 0%,
+      var(--primary) 58%,
+      color-mix(in oklab, var(--primary), black 7%) 100%);
+  color: var(--primary-ink);
+  font: 900 17px/1 var(--font-display);
+  letter-spacing: 0.01em;
+  border: 0;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: var(--shadow-btn),
+      inset 0 1px 0 color-mix(in oklab, var(--primary), white 30%),
+      inset 0 -1px 0 color-mix(in oklab, var(--primary), black 14%);
+  /* A short spring keeps touch feedback responsive without visual noise. */
+  transition: transform 0.18s cubic-bezier(.34, 1.56, .64, 1),
+              box-shadow 0.18s cubic-bezier(.34, 1.56, .64, 1),
+              filter 0.14s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.sb-btn:active {
+  /* Compress slightly under the finger. */
+  transform: translateY(1px) scale(0.985);
+  filter: brightness(0.97);
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--ink), transparent 84%),
+              0 5px 12px -9px color-mix(in oklab, var(--primary), transparent 45%),
+              inset 0 1px 0 color-mix(in oklab, var(--primary), white 20%);
+}
+.sb-btn:disabled {
+  opacity: 0.7;
+  transform: none;
+  cursor: wait;
+}
+.sb-btn.ghost {
+  background: color-mix(in oklab, var(--surface-raised), transparent 22%);
+  color: var(--ink);
+  box-shadow: var(--shadow-control);
+  border: 1px solid var(--line-strong);
+  height: 52px;
+}
+.sb-btn.ghost:active { transform: translateY(1px); }
+.sb-btn.soft {
+  background: linear-gradient(155deg, var(--surface-top), var(--surface-bottom));
+  color: var(--ink);
+  box-shadow: var(--shadow-soft);
+}
+.sb-btn.dark {
+  background: linear-gradient(180deg,
+      oklch(99% 0.004 70) 0%,
+      oklch(94% 0.008 70) 100%);
+  color: oklch(20% 0.04 300);
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.48),
+      inset 0 1px 0 rgba(255,255,255,0.82),
+      inset 0 0 0 1px rgba(20, 14, 26, 0.08);
+}
+.sb-btn.dark:active {
+  box-shadow: 0 4px 12px -9px rgba(0, 0, 0, 0.48);
+}
+
+/* ============================================================
+ * Chips & icon buttons
+ * ============================================================ */
+.sb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: linear-gradient(155deg, var(--surface-top), var(--surface-bottom));
+  border: 1px solid var(--hairline);
+  color: var(--ink-2);
+  font: 800 12px/1 var(--font-display);
+  letter-spacing: 0.02em;
+  box-shadow: var(--shadow-soft);
+  white-space: nowrap;
+  transition: transform 90ms ease, box-shadow 90ms ease;
+}
+.sb-chip:active { transform: scale(0.96); }
+.sb-chip.solid {
+  background: var(--primary);
+  color: var(--primary-ink);
+  border-color: transparent;
+  box-shadow: 0 6px 16px -10px color-mix(in oklab, var(--primary), transparent 25%);
+}
+.sb-chip.soft {
+  background: var(--bg-inset);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.sb-icon-btn {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(155deg, var(--surface-top), var(--surface-bottom));
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--hairline);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.18s cubic-bezier(.34, 1.56, .64, 1);
+}
+.sb-icon-btn:active { transform: translateY(1px) scale(0.94); }
+
+/* ============================================================
+ * Coins HUD pill + help buttons (Hint / Solve) + toast
+ * ============================================================ */
+.sb-coin-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: linear-gradient(180deg,
+      color-mix(in oklab, var(--butter), white 22%),
+      color-mix(in oklab, var(--butter), black 6%));
+  color: oklch(32% 0.07 80);
+  font-weight: 800;
+  border: 1px solid color-mix(in oklab, var(--butter), var(--ink) 18%);
+  box-shadow: 0 7px 16px -12px color-mix(in oklab, var(--butter), var(--ink) 42%),
+      inset 0 1px 0 rgba(255,255,255,0.62);
+}
+.sb-coin-ic { display: inline-flex; color: oklch(60% 0.13 75); }
+.sb-coin-ic svg { width: 18px; height: 18px; }
+
+.sb-double-inline { width: 100%; }
+
+.sb-update-logo { display: grid; place-items: center; }
+.sb-update-logo .sb-app-logo { border-radius: 18px; box-shadow: 0 8px 20px rgba(0,0,0,0.18); }
+
+.sb-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 86px;
+  transform: translateX(-50%) translateY(12px);
+  background: oklch(22% 0.03 280 / 0.94);
+  color: #fff;
+  padding: 11px 20px;
+  border-radius: 999px;
+  font: 700 13px/1 var(--font-display);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2000;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.sb-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================================================
+ * Toggle switch
+ * ============================================================ */
+.sb-toggle {
+  width: 54px;
+  height: 32px;
+  min-width: 54px;
+  min-height: 32px;
+  border-radius: 17px;
+  background: var(--line-strong);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.18s ease, box-shadow 0.18s ease;
+  flex-shrink: 0;
+  border: 0;
+  padding: 0;
+}
+.sb-toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fffaf4;
+  box-shadow: 0 1px 3px oklch(30% 0.05 60 / 0.3);
+  transition: transform 0.2s;
+}
+.sb-toggle::after {
+  transition: transform 0.26s cubic-bezier(.34, 1.56, .64, 1);
+}
+.sb-toggle.on {
+  background: linear-gradient(180deg,
+      color-mix(in oklab, var(--mint), white 14%),
+      var(--mint));
+  box-shadow: inset 0 1px 2px color-mix(in oklab, var(--mint), black 24%);
+}
+.sb-toggle.on::after { transform: translateX(22px); }
+
+/* ============================================================
+ * Progress bar
+ * ============================================================ */
+.sb-progress {
+  height: 10px;
+  background: color-mix(in oklab, var(--bg-inset), var(--ink) 3%);
+  box-shadow: inset 0 1px 2px color-mix(in oklab, var(--ink), transparent 90%);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+.sb-progress > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(180deg,
+      color-mix(in oklab, var(--primary), white 22%),
+      var(--primary));
+  border-radius: 6px;
+  transition: width 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+/* Liquid sheen sweeping along the fill. */
+.sb-progress > span::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg,
+      transparent 30%, rgba(255,255,255,0.38) 48%, transparent 62%);
+  background-size: 220% 100%;
+  animation: sb-liquid-sweep 2.8s ease-in-out infinite;
+}
+@keyframes sb-liquid-sweep {
+  0%   { background-position: 130% 0; }
+  60%, 100% { background-position: -90% 0; }
+}
+.sb-progress.thin { height: 6px; }
+.sb-progress.thin > span { border-radius: 3px; }
+
+/* ============================================================
+ * Setting row
+ * ============================================================ */
+.sb-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 58px;
+  padding: 13px 4px;
+  border-bottom: 1px solid var(--line);
+  gap: 12px;
+}
+.sb-setting-row:last-child { border-bottom: 0; }
+.sb-setting-row[data-action],
+.sb-setting-row[data-nav] {
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background 0.16s ease, transform 0.16s ease;
+}
+.sb-setting-row[data-action]:active,
+.sb-setting-row[data-nav]:active {
+  background: color-mix(in oklab, var(--primary), transparent 94%);
+  transform: scale(0.995);
+}
+
+/* ============================================================
+ * Color helpers (for accent backgrounds)
+ * ============================================================ */
+.sb-bg-coral  { background: var(--coral)  !important; }
+.sb-bg-butter { background: var(--butter) !important; }
+.sb-bg-mint   { background: var(--mint)   !important; }
+.sb-bg-sky    { background: var(--sky)    !important; }
+.sb-bg-lilac  { background: var(--lilac)  !important; }
+.sb-bg-rose   { background: var(--rose)   !important; }
+
+.sb-fg-coral  { color: var(--coral)  !important; }
+.sb-fg-butter { color: var(--butter) !important; }
+.sb-fg-mint   { color: var(--mint)   !important; }
+.sb-fg-sky    { color: var(--sky)    !important; }
+.sb-fg-lilac  { color: var(--lilac)  !important; }
+.sb-fg-rose   { color: var(--rose)   !important; }
+
+/* ============================================================
+ * Layout utilities
+ * ============================================================ */
+.sb-row     { display: flex; align-items: center; gap: 12px; }
+.sb-col     { display: flex; flex-direction: column; gap: 8px; }
+.sb-between { justify-content: space-between; }
+.sb-grow    { flex: 1; min-width: 0; }
+.sb-px      { padding-left: 20px; padding-right: 20px; }
+.sb-pt      { padding-top: 20px; }
+.sb-pb      { padding-bottom: 20px; }
+.sb-center  { display: flex; align-items: center; justify-content: center; }
+.sb-hidden  { display: none !important; }
+
+/* ============================================================
+ * Logo mark
+ * ============================================================ */
+/* The real app icon stands in for the old CSS four-tile mark, so the header,
+   the splash and the launcher are all the same artwork. The SVG rounds its own
+   corners, which means the lift has to be a drop-shadow (it follows the alpha)
+   rather than a box-shadow (which would trace a square around it). */
+.sb-app-header .sb-app-logo {
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px color-mix(in oklab, var(--ink), transparent 82%));
+}
+.sb-wordmark {
+  font: 900 20px/1 var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.sb-wordmark .dot { color: var(--primary); }
+
+/* ============================================================
+ * A11y — focus rings that only show for keyboard users
+ * ============================================================ */
+.sb-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+.sb-btn:focus-visible,
+.sb-icon-btn:focus-visible,
+.sb-menu-tile:focus-visible,
+.sb-ctrl:focus-visible,
+.sb-level-node:focus-visible,
+.sb-shop-card:focus-visible,
+.sb-setting-row:focus-visible,
+[data-nav]:focus-visible,
+[data-action]:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: inherit;
+}
+
+/* ============================================================
+ * Reduced motion — honor prefers-reduced-motion AND the in-app toggle
+ * (body class set by theme.js / ui/index.js when config.reducedMotion = true)
+ * ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.08s !important;
+}
+
+/* ============================================================
+ * Tutorial coachmark — sits above the canvas in tutorial mode.
+ * Speech bubble with a downward arrow that points at the board.
+ * ============================================================ */
+.sb-coachmark {
+  pointer-events: none;
+  margin: 6px 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: sb-coach-in 360ms cubic-bezier(.2,.7,.2,1) both;
+}
+.sb-coachmark-bubble {
+  background: var(--bg-1, #fff);
+  color: var(--ink);
+  border-radius: 18px;
+  padding: 12px 16px;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.15), 0 0 0 1px var(--line, rgba(0,0,0,0.06));
+  pointer-events: auto;
+}
+.sb-coachmark-arrow {
+  width: 18px;
+  height: 10px;
+  margin-top: -1px;
+  background: var(--bg-1, #fff);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.08));
+  animation: sb-coach-arrow 1.6s ease-in-out infinite;
+}
+@keyframes sb-coach-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);     }
+}
+@keyframes sb-coach-arrow {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(4px); }
+}
+
+/* Tutorial step pips in the top bar */
+.sb-tut-pip {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--line-strong, rgba(0,0,0,0.18));
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+.sb-tut-pip.on {
+  width: 22px;
+  border-radius: 4px;
+  background: var(--primary);
+}
+
+/* ============================================================
+ * Prism Mix — HUD chip + level-complete badge
+ * ============================================================ */
+.sb-mix-chip {
+  background: color-mix(in oklab, var(--lilac), transparent 85%);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--lilac), transparent 65%);
+  transition: transform 0.25s ease;
+}
+.sb-mix-chip.pulse {
+  animation: sb-mix-chip-pulse 0.55s cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+@keyframes sb-mix-chip-pulse {
+  0%   { transform: scale(1);    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--lilac), transparent 65%); }
+  40%  { transform: scale(1.2);  box-shadow: 0 0 0 6px color-mix(in oklab, var(--lilac), transparent 70%); }
+  100% { transform: scale(1);    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--lilac), transparent 65%); }
+}
+.sb-badge-mix {
+  border-color: color-mix(in oklab, var(--lilac), transparent 55%);
+}
+.sb-mix-coach {
+  margin: 6px 16px 0;
+}
+.sb-mix-coach .sb-coachmark-bubble {
+  max-width: 340px;
+  pointer-events: auto;
+}
+
+/* ============================================================
+ * Coin-fly — earned coins arc from the win medal to the coin pill
+ * ============================================================ */
+.sb-coinfly {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 220;
+}
+.sb-coinfly i {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  color: var(--butter);
+  opacity: 0;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.18));
+  animation: sb-coinfly-arc 0.62s cubic-bezier(0.5, -0.2, 0.75, 1) forwards;
+}
+@keyframes sb-coinfly-arc {
+  0%   { opacity: 0;   transform: translate(0, 0) scale(0.5); }
+  14%  { opacity: 1;   transform: translate(0, -12px) scale(1.05); }
+  100% { opacity: 0.9; transform: translate(var(--dx), var(--dy)) scale(0.55); }
+}
+.sb-coin-pill.bump { animation: sb-coin-bump 0.4s ease; }
+@keyframes sb-coin-bump {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+[data-reduced-motion="true"] .sb-coinfly { display: none; }
+[data-reduced-motion="true"] .sb-coin-pill.bump { animation: none; }

@@ -1,0 +1,707 @@
+/* SnapBlocks — Layout & overlay plumbing
+ *
+ * The canvas (#gameCanvas) and the DOM UI layer (#sb-ui-root) both live inside
+ * a fixed-size stage (#sb-stage) that matches the logical game dimensions
+ * (400 × 700 declared in js/state.js). They are perfectly overlaid, so a DOM
+ * screen covers exactly what the canvas would draw.
+ *
+ * By default #sb-ui-root is pointer-events:none so the canvas receives touch
+ * during gameplay. Individual screens opt in to pointer-events:auto when active.
+ */
+
+#sb-stage {
+  position: relative;
+  width: min(400px, 100vw);
+  height: min(700px, 100dvh);
+  background:
+    radial-gradient(circle at 18% 4%, color-mix(in oklab, var(--sky), transparent 91%), transparent 34%),
+    radial-gradient(circle at 88% 92%, color-mix(in oklab, var(--primary), transparent 94%), transparent 30%),
+    var(--bg);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow:
+    0 36px 90px -30px oklch(12% 0.03 300 / 0.52),
+    0 0 0 1px var(--hairline) inset;
+}
+
+#sb-stage {
+  --sb-safe-top: max(env(safe-area-inset-top), 64px);
+  --sb-safe-bottom: max(env(safe-area-inset-bottom, 0px), 64px);
+  --sb-game-safe-top: max(env(safe-area-inset-top), 18px);
+  /* Capacitor WebViews can report a zero CSS env inset while gesture/3-button
+     navigation still overlays the final rows. These conservative fallbacks
+     keep interactive controls clear on those devices. */
+  --sb-game-safe-bottom: max(env(safe-area-inset-bottom, 0px), 44px);
+  --sb-screen-safe-top: max(env(safe-area-inset-top), 24px);
+  --sb-screen-safe-bottom: max(env(safe-area-inset-bottom, 0px), 64px);
+  --sb-safe-left: env(safe-area-inset-left);
+  --sb-safe-right: env(safe-area-inset-right);
+}
+
+/* ============================================================
+ * Browser build — everything below here is additive and never matches Android.
+ *
+ * On the selector: browser rules are written as
+ *
+ *     :root[data-platform]:not([data-platform="android"])
+ *
+ * rather than the more obvious [data-platform="web"]. js/platform/index.js
+ * stamps whatever `window.__SNAPBLOCKS_PLATFORM__` says, so a portal build can
+ * legitimately be "crazygames" or "poki" — all of them browsers, none of them
+ * matching ="web". Excluding Android instead means a portal build gets browser
+ * layout by default, which is the safe direction. Requiring the *attribute to
+ * exist* is the other half: the platform module is deferred, so between parse
+ * and module evaluation there is no attribute at all, and matching then would
+ * flash browser layout on Android before it settles. No attribute -> no match
+ * -> today's Android rendering, which is the guarantee this release needs.
+ * ============================================================ */
+
+/* The hazard the fallbacks above guard against does not exist in a browser.
+ *
+ * Those numbers are sized for an Android WebView that reports a zero env()
+ * inset while gesture navigation still overlays the bottom rows — a real device
+ * bug, and the reason Android keeps them untouched. A browser has no navigation
+ * bar to hide under, so there the fallbacks are pure dead space: the two
+ * --sb-screen-* values alone cost 88px of a 700px stage.
+ *
+ * env() stays inside every max() rather than being dropped, because a browser
+ * CAN report a genuine inset — iOS Safari's home indicator, a notch in
+ * landscape — and there the value is trustworthy. Only the floors come down,
+ * and not to zero: several screens read these as ordinary breathing room on top
+ * of their own padding, so flooring them at 0 would crowd content to the frame
+ * edge rather than reclaim space. This returns ~60px on menu-style screens and
+ * ~44px on the game screen. */
+:root[data-platform]:not([data-platform="android"]) #sb-stage {
+  --sb-safe-top: max(env(safe-area-inset-top), 10px);
+  --sb-safe-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
+  --sb-game-safe-top: max(env(safe-area-inset-top), 8px);
+  --sb-game-safe-bottom: max(env(safe-area-inset-bottom, 0px), 10px);
+  --sb-screen-safe-top: max(env(safe-area-inset-top), 10px);
+  --sb-screen-safe-bottom: max(env(safe-area-inset-bottom, 0px), 18px);
+}
+
+#gameCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  image-rendering: auto;
+  touch-action: none;
+  background: transparent;
+}
+
+#sb-ui-root {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  font-family: var(--font-display);
+  color: var(--ink);
+}
+
+/* Two stacked layers inside the UI root:
+ *   #sb-base    — the current "base" screen (menu, game, etc.)
+ *   #sb-overlay — an optional sheet on top (pause, ad)
+ * Both are absolute inset:0 so they match the stage bounds. */
+.sb-base-layer {
+  position: absolute;
+  inset: 0;
+}
+
+/* A screen is one full-bleed overlay inside the UI root */
+.sb-screen {
+  position: absolute;
+  inset: 0;
+  /* Barely-perceptible ambient depth: a hair darker toward the bottom than
+     a flat fill. Built from theme tokens (not a hardcoded color) so it
+     holds up correctly across all four themes. */
+  background: linear-gradient(180deg,
+      var(--bg) 0%,
+      color-mix(in oklab, var(--bg), var(--bg-2) 60%) 100%);
+  color: var(--ink);
+  font-family: var(--font-display);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.985);
+  transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.sb-screen.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* A scrollable body region inside a screen (hides its scrollbar) */
+.sb-screen-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+  box-sizing: border-box;
+  padding-bottom: calc(20px + var(--sb-screen-safe-bottom)) !important;
+  scroll-padding-bottom: calc(20px + var(--sb-screen-safe-bottom));
+}
+.sb-screen-body::-webkit-scrollbar { display: none; }
+
+/* Most screen bodies are flex columns (menu, levels, settings, trophies, shop,
+ * onboarding, level intro, Focus). A flex item defaults to flex-shrink:1, so on
+ * a short viewport — landscape, split-screen, a tall phone in multi-window —
+ * the cards *compressed* to fit and the body never scrolled: text crowded,
+ * heroes lost their art, buttons went sub-tap-target. Content should push the
+ * scroll container taller instead.
+ *
+ * This generalises what several screens had already discovered and patched one
+ * at a time (.sb-map-scroll > *, .sb-focus-hero, .sb-intro-scene each carry a
+ * local flex-shrink:0). Bodies that are plain block containers ignore it.
+ * .sb-grow is excluded — where it appears it is deliberately elastic. */
+.sb-screen-body > *:not(.sb-grow) { flex-shrink: 0; }
+
+/* App header used inside most screens */
+.sb-app-header {
+  padding:
+    calc(16px + var(--sb-screen-safe-top))
+    calc(20px + var(--sb-safe-right))
+    14px
+    calc(20px + var(--sb-safe-left));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  background: linear-gradient(180deg,
+    color-mix(in oklab, var(--surface-glass), var(--bg) 10%),
+    color-mix(in oklab, var(--surface-glass), transparent 10%));
+  border-bottom: 1px solid var(--hairline);
+  -webkit-backdrop-filter: blur(14px) saturate(1.08);
+  backdrop-filter: blur(14px) saturate(1.08);
+  box-shadow: 0 10px 28px -26px color-mix(in oklab, var(--ink), transparent 54%);
+  position: relative;
+  z-index: 3;
+}
+
+/* Bottom-sheet overlay (pause, ad prompt) */
+.sb-overlay {
+  position: absolute;
+  inset: 0;
+  background: oklch(18% 0.035 300 / 0.42);
+  -webkit-backdrop-filter: blur(10px) saturate(0.9);
+  backdrop-filter: blur(10px) saturate(0.9);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+.sb-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.sb-sheet {
+  width: 100%;
+  background: linear-gradient(180deg, var(--surface-top), var(--bg));
+  border-radius: 32px 32px 0 0;
+  padding:
+    24px
+    calc(24px + var(--sb-safe-right))
+    calc(32px + var(--sb-screen-safe-bottom))
+    calc(24px + var(--sb-safe-left));
+  border: 1px solid var(--hairline);
+  border-bottom: 0;
+  box-shadow:
+    0 -1px 0 color-mix(in oklab, white, transparent 70%) inset,
+    0 -24px 60px -18px oklch(12% 0.03 300 / 0.45);
+  opacity: 0;
+  transform: translateY(24px);
+  /* Soft spring: a slight overshoot on the way up reads as a physical
+     sheet settling into place rather than a linear slide. */
+  transition: transform 0.32s cubic-bezier(0.34, 1.3, 0.64, 1),
+              opacity 0.28s ease;
+  /* Safety net: a tall sheet (e.g. out-of-coins on a short phone) scrolls
+     within itself instead of clipping off the top of the screen. */
+  box-sizing: border-box;
+  /* Measured against the overlay (inset:0 inside the stage), not the viewport.
+     100dvh is the wrong yardstick wherever the stage is smaller than the
+     window — tablets, foldables, desktop — where it let a tall sheet grow past
+     the stage and clip against #sb-stage's overflow:hidden. */
+  max-height: calc(100% - 16px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.sb-sheet::-webkit-scrollbar { display: none; }
+.sb-overlay.active .sb-sheet { opacity: 1; transform: translateY(0); }
+.sb-sheet-handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line-strong);
+  margin: 0 auto 20px;
+}
+
+/* Edge-to-edge presentation on smaller screens while keeping the aspect ratio.
+ *
+ * The width clause is capped at 400px on purpose. A bare `width: 100vw` here
+ * also fired on any SHORT viewport — landscape phones, split-screen, a short
+ * desktop window — where the viewport is *wider* than 400px, stretching the
+ * stage to e.g. 851px while the canvas stayed uniformly scaled and centred.
+ * Every DOM screen then laid out at a width the design never targets.
+ * Filling the height on short viewports is still right; filling the width is
+ * only right when the viewport is genuinely narrow. */
+@media (max-width: 420px), (max-height: 740px) {
+  #sb-stage {
+    width: min(100vw, 400px);
+    height: 100dvh;
+  }
+}
+/* The rounded "device" framing only earns its keep when the stage is inset
+   from the page. Once it is full-bleed, drop it. */
+@media (max-width: 420px) {
+  #sb-stage {
+    width: 100vw;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+/* ============================================================
+ * Web: scale the fixed stage to fit the viewport
+ *
+ * Neither of the two responsive strategies above applies in a browser. The
+ * stage cannot grow fluidly — the canvas and every DOM screen are authored in
+ * one 400 × 700 logical space and are perfectly overlaid, so stretching the box
+ * would lay the DOM out at a width the design never targets while the canvas
+ * stayed uniformly fitted. And it cannot stay 400 × 700 unscaled either, which
+ * is the phone-shaped-box-in-an-empty-page problem.
+ *
+ * So the box stays exactly 400 × 700 and gets multiplied. --sb-stage-scale is
+ * computed in js/ui/stageScale.js (CSS cannot divide one length by another to
+ * produce a unitless factor) and is only ever set on web. The `1` fallback
+ * means that if that module never runs, this degrades to today's unscaled
+ * stage rather than to nothing.
+ *
+ * These selectors carry an id plus two more components, so they outrank the
+ * bare #sb-stage rules in the media queries above regardless of source order —
+ * no !important needed, and Android never matches them at all.
+ * ============================================================ */
+:root[data-platform]:not([data-platform="android"]) #sb-stage {
+  width: 400px;
+  height: 700px;
+  /* #game-container is a flex row, so a 400px stage in a viewport narrower than
+     400px would otherwise be flex-shrunk below its logical width — silently
+     reintroducing the fluid-layout bug the scale exists to avoid. Android never
+     hits this because its width is min(400px, 100vw) and already fits. */
+  flex: 0 0 auto;
+  transform: scale(var(--sb-stage-scale, 1));
+  transform-origin: center center;
+  /* Deliberately no will-change/translateZ. Promoting this to a fixed-size
+     compositor layer would rasterise the DOM text once and then stretch the
+     bitmap; leaving it unpromoted lets the browser re-rasterise at the
+     effective scale, which is what keeps type crisp above 1×. */
+}
+
+/* CrazyGames is a first-class landscape composition on every screen. Keeping
+   one frame prevents navigation from shrinking into a phone strip. */
+:root[data-platform="crazygames"][data-platform] #sb-stage {
+  width: 760px;
+  height: 520px;
+}
+
+/* The rounded frame + drop shadow is dropped on narrow Android viewports
+   because the stage is full-bleed there. On web the stage is letterboxed at
+   every size, so the framing always earns its keep — restore it over that
+   media query.
+
+   The shadow is the whole separation mechanism now that the backdrop below is a
+   light desk tone rather than a dark room, so it is a *cast* shadow: hue-matched
+   to --hero-end (a deep, theme-tinted dark in all four themes) at low alpha,
+   plus a faint dark edge ring where the old rule used a white one that only read
+   against black. Midnight keeps the original deep-on-dark values further down. */
+:root[data-platform]:not([data-platform="android"]) #sb-stage {
+  border-radius: 28px;
+  box-shadow:
+    0 48px 120px -36px color-mix(in oklab, var(--hero-end), transparent 62%),
+    0 0 0 1px var(--hairline) inset,
+    0 0 0 1px color-mix(in oklab, var(--hero-end), transparent 88%);
+}
+
+/* CrazyGames on a phone uses the portrait game layout, but it is still hosted
+   in a browser and would normally inherit the framed 400 x 700 web stage above.
+   Uniformly fitting that stage to a tall phone leaves letterbox bands above
+   and below it (for example, 390 x 844 becomes a 390 x 682.5 stage). The native
+   mobile presentation already proves the safe solution: let the stage occupy
+   the full viewport while the 400 x 700 canvas remains uniformly centred
+   inside it. DOM screens then use the full phone height, the game background is
+   edge-to-edge, and board/piece geometry is never stretched. */
+:root[data-host-platform="crazygames"][data-platform="web"] #sb-stage {
+  width: 100vw;
+  height: 100dvh;
+  transform: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Something for the framed stage to sit on.
+ *
+ * This used to derive from --hero-end alone, which is ~20% L in every theme —
+ * so mixing it toward black collapsed all four themes to the same near-black
+ * (#020207 in cream, midnight and, to a rounding error, meadow and sunset), and
+ * the --hero-glow radial on top added a red-orange wash in cream. A near-white
+ * stage floating in near-black reads as a void and fights the warm identity the
+ * rest of the game is built on.
+ *
+ * The base is now each theme's own background family pulled toward --hero-end,
+ * which is a genuinely theme-responsive move: cream/meadow/sunset drop from
+ * ~97% L to a ~68-77% mid-tone that reads as a surface a device is resting on.
+ * --bg-inset rather than --bg is the base on purpose — it is the same family one
+ * step down and carries roughly twice the chroma (cream 0.022 vs 0.012), and
+ * chroma is exactly what this mix spends: --hero-end sits near the opposite side
+ * of the oklab a/b plane from cream's warm hue, so starting from --bg would
+ * cancel to a flat neutral grey and lose the warmth this backdrop exists to
+ * keep. The lifted radial at the top is --bg, the lightest surface in the theme,
+ * so the depth cue is also the theme's own colour. Separation from the stage
+ * comes from the drop shadow above, not from darkness. */
+:root[data-platform]:not([data-platform="android"]) #game-container {
+  background:
+    radial-gradient(ellipse 88% 56% at 50% -2%,
+      color-mix(in oklab, var(--bg), transparent 55%), transparent 70%),
+    linear-gradient(168deg,
+      color-mix(in oklab, var(--bg-inset), var(--hero-end) 22%),
+      color-mix(in oklab, var(--bg-inset), var(--hero-end) 34%));
+  /* pan-y lets .sb-screen-body still scroll while blocking browser pinch-zoom,
+     double-tap zoom and horizontal overscroll. #gameCanvas keeps its own
+     touch-action:none — the effective value is the intersection down the hit
+     chain, so the board still swallows drags completely. */
+  touch-action: pan-y;
+  overscroll-behavior: none;
+}
+
+/* Midnight is the one theme where a dark surround is correct, and the one where
+   the mix above does nothing: its surfaces are already ~18-22% L, within a
+   couple of points of --hero-end, so the result would be indistinguishable from
+   the stage itself. Same "derive from the theme's own background" rule,
+   opposite direction — pulled toward black instead — and from --bg rather than
+   --bg-inset, because midnight's whole surface scale is compressed near the
+   bottom and starting one step down lands back on the ~#030305 void the light
+   themes are escaping. 14%/30% keeps the stage (#1c1923) clearly proud of a
+   backdrop around #15121a: a dark room, not an absence of one. The deep-on-dark
+   shadow and white edge ring stay as they were, tuned for exactly this case. */
+:root[data-platform]:not([data-platform="android"])[data-theme="midnight"] #sb-stage {
+  box-shadow:
+    0 48px 120px -36px oklch(8% 0.03 300 / 0.72),
+    0 0 0 1px var(--hairline) inset,
+    0 0 0 1px oklch(100% 0 0 / 0.06);
+}
+:root[data-platform]:not([data-platform="android"])[data-theme="midnight"] #game-container {
+  background:
+    radial-gradient(ellipse 88% 56% at 50% -2%,
+      color-mix(in oklab, var(--bg), transparent 72%), transparent 70%),
+    linear-gradient(168deg,
+      color-mix(in oklab, var(--bg), black 14%),
+      color-mix(in oklab, var(--bg), black 30%));
+}
+
+/* Belt and braces against pull-to-refresh / rubber-band on mobile browsers.
+   styles.css already sets overflow:hidden here, which handles most of it; the
+   background matters only for the instant an iOS rubber-band exposes it, so it
+   matches the backdrop's top stop — the edge a pull-down gesture uncovers. */
+:root[data-platform]:not([data-platform="android"]) body {
+  overscroll-behavior: none;
+  background: color-mix(in oklab, var(--bg-inset), var(--hero-end) 22%);
+}
+:root[data-platform]:not([data-platform="android"])[data-theme="midnight"] body {
+  background: color-mix(in oklab, var(--bg), black 14%);
+}
+
+/* .sb-toast is appended to document.body (ui/index.js), so it is fixed to the
+   viewport and knows nothing about the frame — at 86px from the bottom it would
+   float on the backdrop below the stage. --sb-stage-frame-bottom is the
+   letterbox gap published by stageScale.js; adding it puts the toast back on
+   the same visual line it occupies on a phone, and matching the scale keeps it
+   proportionate to the stage it belongs to. */
+:root[data-platform]:not([data-platform="android"]) .sb-toast {
+  bottom: calc(var(--sb-stage-frame-bottom, 0px) + 86px * var(--sb-stage-scale, 1));
+  transform: translateX(-50%) translateY(12px) scale(var(--sb-stage-scale, 1));
+}
+:root[data-platform]:not([data-platform="android"]) .sb-toast.show {
+  transform: translateX(-50%) translateY(0) scale(var(--sb-stage-scale, 1));
+}
+
+/* ============================================================
+ * Web: desktop gutter panels
+ *
+ * Built and injected by js/ui/sidePanels.js, which only runs in a browser — so
+ * on Android these elements do not exist at all and none of this can match. The
+ * platform guard is kept anyway, in step with every other rule in this section.
+ *
+ * The panels are `absolute` children of #game-container, which is a flex row.
+ * Absolute positioning removes them from that flow, so #sb-stage stays the only
+ * in-flow child and its box is unchanged — the guarantee the drag mapping in
+ * js/input.js depends on (see the header of js/ui/stageScale.js).
+ *
+ * Horizontal placement is derived from the stage rather than from the window
+ * edge. The stage's visual half-width is 200px x --sb-stage-scale (its layout
+ * box stays 400px; transform-origin is center center, so the visual and layout
+ * centres coincide with the container's), which makes 50% ± that the frame's
+ * live edge at any scale. Anchoring there keeps --sb-side-gap constant instead
+ * of letting the panel drift into the frame as the window grows.
+ * ============================================================ */
+:root[data-platform]:not([data-platform="android"]) {
+  --sb-side-panel-w: 268px;
+  /* Clear of the frame's 120px-blur cast shadow at the density where it still
+     reads, without stranding the panel against the window edge. */
+  --sb-side-gap: 48px;
+  /* Smallest gutter the pair can live in: gap + panel + this much air before
+     the window edge. Also the term that sets the breakpoint below. */
+  --sb-side-edge: 24px;
+}
+
+:root[data-platform]:not([data-platform="android"]) .sb-side-panel {
+  position: absolute;
+  top: 50%;
+  width: var(--sb-side-panel-w);
+  /* Never taller than the frame it flanks. The stage's visual height is
+     700px x the scale, by the same reasoning as the half-width above. */
+  max-height: calc(700px * var(--sb-stage-scale, 1));
+  transform: translateY(-50%);
+  box-sizing: border-box;
+  /* This layer must never take a pointer event away from the board. Nothing
+     inside opts back in — the panels are read-only chrome, so unlike
+     #sb-ui-root there is no opt-in half of the pattern. */
+  pointer-events: none;
+  /* Off by default; the gutter query below is the only thing that shows them,
+     so every viewport too narrow to hold them renders exactly as it does now. */
+  display: none;
+  overflow: hidden;
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--hairline);
+  /* Token surface + token ink, so contrast is inherited from the same pairing
+     every card in the app uses. The backdrop under these panels is a mid-tone
+     in cream/meadow/sunset and near-black in midnight, and text placed directly
+     on it would have to pick a side; a surface removes the question. */
+  background: var(--surface-glass);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-soft);
+  color: var(--ink);
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-panel--brand {
+  left: calc(50% - (200px * var(--sb-stage-scale, 1)) - var(--sb-side-gap) - var(--sb-side-panel-w));
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-panel--play {
+  left: calc(50% + (200px * var(--sb-stage-scale, 1)) + var(--sb-side-gap));
+}
+
+/* The threshold, and why it is 1280.
+ *
+ * Gutter width is (viewport - 400 x scale) / 2, so it shrinks as the scale
+ * grows. A media query cannot read the scale, so the query assumes the WORST
+ * case: stageScale.js caps at MAX_SCALE = 1.5, i.e. a 600px-wide frame. The
+ * panels then need (vw - 600) / 2 >= 48 + 268 + 24, which is vw >= 1280.
+ * Everything narrower — including the 1100px-wide window and every phone —
+ * keeps today's bare centred stage untouched. In practice the scale is height-
+ * bound and 1.5 only occurs above a ~1150px-tall viewport, so a 1280 x 800
+ * laptop actually has ~426px of gutter to the panel's 340px: the query is
+ * deliberately conservative rather than exact.
+ *
+ * The height term is the same conservatism vertically: a squat window makes the
+ * gutters wider (a smaller stage) but leaves the panel nowhere to sit. */
+@media (min-width: 1280px) and (min-height: 640px) {
+  :root[data-platform]:not([data-platform="android"]) .sb-side-panel {
+    display: block;
+  }
+}
+
+/* The portal shell already uses the full landscape frame. */
+:root[data-platform="crazygames"][data-platform] .sb-side-panel {
+  display: none;
+}
+
+:root[data-platform]:not([data-platform="android"]) .sb-side-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-brand .sb-menu-app-logo {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-brand .sb-wordmark {
+  font-size: 24px;
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-tagline {
+  font: 600 14px/1.5 var(--font-display);
+  color: var(--ink-2);
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-title {
+  font: 800 13px/1 var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+/* --ink-2, not --ink-soft, for every secondary line in these panels. --ink-soft
+   is tuned against the app's own bright surfaces; measured against this
+   panel's --surface-glass it lands at 3.3-3.8:1 in cream, meadow and sunset —
+   under AA for text this size. --ink-2 measures 7.0-9.4:1 in all four themes. */
+:root[data-platform]:not([data-platform="android"]) .sb-side-note {
+  font: 600 13px/1.5 var(--font-display);
+  color: var(--ink-2);
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-block {
+  padding-top: 16px;
+  border-top: 1px solid var(--hairline);
+}
+
+/* Mix recipes. The chips are the piece colours themselves (js/levels.js), so
+   they stay put across themes on purpose — this is the one place on the page
+   where the swatch has to match what the player will pick up. */
+:root[data-platform]:not([data-platform="android"]) .sb-side-mixes {
+  list-style: none;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-mixes li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-chip {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink), transparent 88%) inset;
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-op {
+  font: 800 12px/1 var(--font-display);
+  color: var(--ink-2);
+}
+/* The chips plus the result's name are the whole visual statement — a full
+   "Yellow plus Blue makes Green" sentence wrapped to two lines here and made
+   the three rows ragged. That sentence still exists in the markup, carried by
+   .sb-visually-hidden, so a screen reader gets the recipe the swatches convey. */
+:root[data-platform]:not([data-platform="android"]) .sb-side-mix-label {
+  margin-left: 6px;
+  font: 700 13px/1.3 var(--font-display);
+  color: var(--ink-2);
+}
+
+:root[data-platform]:not([data-platform="android"]) .sb-side-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font: 600 13px/1.5 var(--font-display);
+  color: var(--ink-2);
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-steps b {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--primary), transparent 86%);
+  color: var(--primary);
+  font: 800 11px/20px var(--font-display);
+  text-align: center;
+}
+
+:root[data-platform]:not([data-platform="android"]) .sb-side-stats {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-stats > div {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--bg-inset), transparent 40%);
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-stats b {
+  display: block;
+  font: 800 20px/1.1 var(--font-display);
+  color: var(--ink);
+}
+:root[data-platform]:not([data-platform="android"]) .sb-side-stats span {
+  font: 700 11px/1.3 var(--font-display);
+  color: var(--ink-2);
+}
+
+/* Extra resting space lets the final Settings card scroll fully above Android
+   gesture navigation, including WebViews that do not expose an env() inset. */
+.sb-screen[data-screen="settings"] .sb-screen-body {
+  padding-bottom: calc(36px + var(--sb-screen-safe-bottom)) !important;
+  scroll-padding-bottom: calc(36px + var(--sb-screen-safe-bottom));
+}
+
+/* ============================================================
+ * Content entrance stagger — a freshly-activated screen's direct
+ * cards/tiles rise in with a short cascading delay. Skipped on the
+ * game screen, which has its own hand-tuned board/tray choreography
+ * (data-screen="game" is set on the screen root element).
+ * ============================================================ */
+@keyframes sb-content-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.sb-screen.active:not([data-screen="game"]) .sb-card,
+.sb-screen.active:not([data-screen="game"]) .sb-menu-tile,
+.sb-screen.active:not([data-screen="game"]) .sb-world-card {
+  animation: sb-content-in 320ms ease-out backwards;
+}
+.sb-screen.active:not([data-screen="game"]) .sb-card:nth-child(2),
+.sb-screen.active:not([data-screen="game"]) .sb-menu-tile:nth-child(2),
+.sb-screen.active:not([data-screen="game"]) .sb-world-card:nth-child(2) { animation-delay: 40ms; }
+.sb-screen.active:not([data-screen="game"]) .sb-card:nth-child(3),
+.sb-screen.active:not([data-screen="game"]) .sb-menu-tile:nth-child(3),
+.sb-screen.active:not([data-screen="game"]) .sb-world-card:nth-child(3) { animation-delay: 80ms; }
+.sb-screen.active:not([data-screen="game"]) .sb-card:nth-child(4),
+.sb-screen.active:not([data-screen="game"]) .sb-menu-tile:nth-child(4),
+.sb-screen.active:not([data-screen="game"]) .sb-world-card:nth-child(4) { animation-delay: 120ms; }
+.sb-screen.active:not([data-screen="game"]) .sb-card:nth-child(n+5),
+.sb-screen.active:not([data-screen="game"]) .sb-menu-tile:nth-child(n+5),
+.sb-screen.active:not([data-screen="game"]) .sb-world-card:nth-child(n+5) { animation-delay: 160ms; }
+
+/* ============================================================
+ * Reduced motion — screen/sheet transforms fully back off, leaving a
+ * near-instant opacity-only cross-fade (the transition *duration* is
+ * already shortened globally by the [data-reduced-motion] rule in
+ * css/components.css; here we remove the transform offsets so there is
+ * nothing left to move). The entrance stagger is disabled outright.
+ * ============================================================ */
+[data-reduced-motion="true"] .sb-screen,
+[data-reduced-motion="true"] .sb-sheet {
+  transform: none;
+}
+[data-reduced-motion="true"] .sb-screen.active .sb-card,
+[data-reduced-motion="true"] .sb-screen.active .sb-menu-tile,
+[data-reduced-motion="true"] .sb-screen.active .sb-world-card {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}

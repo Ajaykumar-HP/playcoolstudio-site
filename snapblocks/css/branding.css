@@ -1,0 +1,158 @@
+/* SnapBlocks launch splash
+ *
+ * This file used to carry the PlayCool Studio launch identity — a navy aurora
+ * backdrop with an animated studio mark that played for ~1.6s before the game's
+ * own intro. It was removed: it introduced a second brand, in a second palette,
+ * ahead of the product's own, and it doubled time-to-first-tap.
+ *
+ * What remains is a single-stage, theme-aware launch that is already the game's
+ * world — cream surface, candy accents, the SnapBlocks mark. The studio still
+ * owns the Play Store listing and the about screen; it does not need the first
+ * 1.6 seconds of every session.
+ *
+ * Loaded last so launch polish can evolve without touching general screens.
+ */
+
+.sb-launch-splash {
+    isolation: isolate;
+    padding:
+        calc(26px + var(--sb-screen-safe-top))
+        clamp(24px, 9vw, 42px)
+        calc(24px + var(--sb-screen-safe-bottom));
+}
+
+/* A soft warm bloom behind the mark. Uses theme tokens, so Midnight/Meadow/
+   Sunset each get their own launch without a per-theme override here. */
+.sb-launch-splash::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 50% 38%,
+            color-mix(in oklab, var(--butter), transparent 78%) 0%,
+            transparent 62%);
+    animation: sb-launch-bloom 900ms ease-out both;
+}
+
+.sb-launch-splash .sb-app-intro {
+    position: relative;
+    z-index: 1;
+    width: min(320px, 100%);
+    gap: 22px;
+}
+
+.sb-launch-splash .sb-app-logo {
+    width: clamp(96px, 29vw, 116px);
+    height: auto;
+    border-radius: 26px;
+    box-shadow:
+        0 18px 34px -18px color-mix(in oklab, var(--ink), transparent 55%),
+        0 0 0 1px var(--hairline) inset;
+}
+
+.sb-launch-splash .sb-splash-tagline {
+    margin-top: 10px;
+    color: var(--ink-soft);
+    letter-spacing: 0.075em;
+}
+
+/* Slimmer than the in-app loader — at ~1.2s this reads as a breath, not a wait. */
+.sb-launch-splash .sb-splash-loader {
+    width: min(150px, 58%);
+    height: 3px;
+    margin-top: 6px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--line), transparent 30%);
+    overflow: hidden;
+}
+
+.sb-launch-splash .sb-splash-loader-fill {
+    width: 42%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg,
+        transparent,
+        var(--primary) 30%,
+        color-mix(in oklab, var(--lilac), var(--primary) 40%) 72%,
+        transparent);
+    animation: sb-launch-shimmer 1.05s ease-in-out infinite;
+}
+
+/* Studio credit. Text only, pinned to the bottom edge rather than sitting in
+   the intro stack, so it reads as a publisher line beneath the game's own mark
+   instead of competing with it. Replaces the PlayCool crystal emblem. */
+.sb-launch-splash .sb-splash-studio {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(26px + var(--sb-screen-safe-bottom));
+    z-index: 1;
+    text-align: center;
+    font: 800 12px/1.2 var(--font-display);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    opacity: 0.8;
+    animation: sb-studio-credit-in 760ms 180ms ease-out both;
+}
+
+@keyframes sb-studio-credit-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 0.8; transform: none; }
+}
+
+@keyframes sb-launch-bloom {
+    from { opacity: 0; transform: scale(1.06); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes sb-launch-shimmer {
+    from { transform: translateX(-140%); }
+    to   { transform: translateX(330%); }
+}
+
+@media (max-height: 610px) {
+    .sb-launch-splash {
+        padding-top: calc(14px + var(--sb-screen-safe-top));
+        padding-bottom: calc(14px + var(--sb-screen-safe-bottom));
+    }
+    .sb-launch-splash .sb-app-intro { gap: 14px; }
+    .sb-launch-splash .sb-app-logo { width: 92px; }
+    /* The credit is out of flow, so on short screens it has to be pulled in
+       tighter or it can crowd the loader under the intro stack. */
+    .sb-launch-splash .sb-splash-studio {
+        bottom: calc(14px + var(--sb-screen-safe-bottom));
+        font-size: 11px;
+    }
+}
+
+/* Reduced motion: the splash still shows, it just stops moving. The loader
+   holds a static fill rather than sweeping, so nothing implies progress that
+   is not being made. */
+[data-reduced-motion="true"] .sb-launch-splash::after,
+[data-reduced-motion="true"] .sb-launch-splash .sb-splash-studio,
+[data-reduced-motion="true"] .sb-launch-splash .sb-splash-loader-fill {
+    animation: none !important;
+}
+
+[data-reduced-motion="true"] .sb-launch-splash::after { opacity: 1; transform: none; }
+
+[data-reduced-motion="true"] .sb-launch-splash .sb-splash-loader-fill {
+    width: 62%;
+    background: var(--primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sb-launch-splash::after,
+    .sb-launch-splash .sb-splash-studio,
+    .sb-launch-splash .sb-splash-loader-fill {
+        animation: none !important;
+    }
+    .sb-launch-splash::after { opacity: 1; transform: none; }
+    .sb-launch-splash .sb-splash-loader-fill {
+        width: 62%;
+        background: var(--primary);
+    }
+}

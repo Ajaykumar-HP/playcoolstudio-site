@@ -1,0 +1,45 @@
+@import url("css/branding.css");
+
+/* SnapBlocks — Base body + stage framing
+ *
+ * The candy palette (cream/midnight) lives in css/tokens.css.
+ * Component primitives live in css/components.css.
+ * Stage + overlay plumbing lives in css/layout.css.
+ * This file only sets up the body chrome around the device stage.
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    font-family: var(--font-display, 'Nunito', 'Outfit', system-ui, sans-serif);
+    color: var(--ink);
+    background: oklch(94% 0.015 70); /* cream page chrome (behind the stage) */
+}
+
+[data-theme="midnight"] body {
+    background: oklch(14% 0.02 300);
+}
+
+#game-container {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: var(--bg, oklch(94% 0.015 70));
+}
